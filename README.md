@@ -4,7 +4,7 @@ A CLI program that takes a user's coordinates and returns the three closest coff
 
 ## Problem
 
-Given a user's position on a flat plane (x and y coordinates), fetch all available coffee shops from a remote API and find the three that are closest to the user using Euclidean distance.
+Given a user's position on a flat plane (x and y coordinates), fetch all available coffee shops from the API and find the three that are closest to the user using Euclidean distance.
 
 ## Usage
 
@@ -35,7 +35,7 @@ Distances are rounded to four decimal places.
 3. Calculates the Euclidean distance between the user and each shop: `sqrt((shopX - userX)² + (shopY - userY)²)`
 4. Sorts shops by distance ascending and returns the top three
 
-The API may occasionally return errors (503, 504). The program handles these gracefully and exits with a descriptive message.
+The API may occasionally return errors. Each request is retried up to three times, with an increasing delay between attempts, before the program gives up, throws an error, and returns an empty result.
 
 ## Commands
 
