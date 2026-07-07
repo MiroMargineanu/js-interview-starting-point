@@ -6,6 +6,8 @@ export const API_BASE_URL = "https://api-challenge.agilefreaks.com";
 export const BASE_RETRY_DELAY = 1000;
 export const MAX_RETRY_ATTEMPTS = 3;
 
+const isRetryable = (error) => !error.status || error.status >= 500;
+
 const delayRetry = (waitingTime) =>
   new Promise((resolve) => setTimeout(resolve, waitingTime));
 
@@ -17,7 +19,7 @@ const retryWrapper = async (functionToRetry, attempt = 0) => {
   try {
     return await functionToRetry();
   } catch (error) {
-    if (attempt >= MAX_RETRY_ATTEMPTS) {
+    if (attempt >= MAX_RETRY_ATTEMPTS || !isRetryable(error)) {
       throw error;
     }
 
@@ -37,7 +39,9 @@ export const getToken = () =>
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to get token: ${response.status}`);
+      const error = new Error(`Failed to get token: ${response.status}`);
+      error.status = response.status;
+      throw error;
     }
 
     const data = await response.json();
@@ -57,7 +61,9 @@ export const getCoffeeShops = (token) =>
     );
 
     if (!response.ok) {
-      throw new Error(`Failed to get coffee shops: ${response.status}`);
+      const error = new Error(`Failed to get coffee shops: ${response.status}`);
+      error.status = response.status;
+      throw error;
     }
 
     return response.json();
