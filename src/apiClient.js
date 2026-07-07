@@ -3,7 +3,8 @@
  */
 
 export const API_BASE_URL = "https://api-challenge.agilefreaks.com";
-export const RETRY_ATTEMPTS_DELAYS = [1000, 2000, 3000];
+export const BASE_RETRY_DELAY = 1000;
+export const MAX_RETRY_ATTEMPTS = 3;
 
 const delayRetry = (waitingTime) =>
   new Promise((resolve) => setTimeout(resolve, waitingTime));
@@ -16,11 +17,11 @@ const retryWrapper = async (functionToRetry, attempt = 0) => {
   try {
     return await functionToRetry();
   } catch (error) {
-    if (attempt >= RETRY_ATTEMPTS_DELAYS.length) {
+    if (attempt >= MAX_RETRY_ATTEMPTS) {
       throw error;
     }
 
-    await delayRetry(RETRY_ATTEMPTS_DELAYS[attempt]);
+    await delayRetry(BASE_RETRY_DELAY * Math.pow(2, attempt));
     return retryWrapper(functionToRetry, attempt + 1);
   }
 };
