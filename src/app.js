@@ -19,15 +19,10 @@ export const getNearestShops = async (position) => {
       (alpha, beta) => alpha.distance - beta.distance,
     );
 
-    const nearest = sortedShops.slice(0, 3);
+    const nearestThreeShops = sortedShops.slice(0, 3);
 
-    nearest.forEach(({ shop, distance }) => {
-      console.log(`${shop.name}, ${distance.toFixed(4)}`);
-    });
-
-    return nearest;
+    return nearestThreeShops;
   } catch (error) {
-    console.error(`Error: ${error.message}`);
-    return [];
+    throw error;
   }
 };
