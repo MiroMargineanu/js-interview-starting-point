@@ -10,16 +10,13 @@ export const getNearestShops = async (position) => {
     const token = await getToken();
     const shops = await getCoffeeShops(token);
 
-    const shopsWithDistance = shops.map((shop) => ({
-      shop,
-      distance: calculateDistance(position, shop),
-    }));
-
-    const sortedShops = shopsWithDistance.sort(
-      (alpha, beta) => alpha.distance - beta.distance,
-    );
-
-    const nearestThreeShops = sortedShops.slice(0, 3);
+    const nearestThreeShops = shops
+      .map((shop) => ({
+        shop,
+        distance: calculateDistance(position, shop),
+      }))
+      .sort((alpha, beta) => alpha.distance - beta.distance)
+      .slice(0, 3);
 
     return nearestThreeShops;
   } catch (error) {
